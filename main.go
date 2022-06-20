@@ -8,15 +8,6 @@ import (
 /* Mostly based on net/http package */
 
 /*
-The project structure
-myGin/
-|--gin.go
-|--go.mod
-main.go
-go.mod
-*/
-
-/*
 The source code:
 package http
 
@@ -66,6 +57,14 @@ func main() {
 		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
 	})
 
+	r.GET("/hello/:name", func(c *myGin.Context) {
+		c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+	})
+
+	r.GET("/assets/*filepath", func(c *myGin.Context) {
+		c.JSON(http.StatusOK, myGin.H{"filepath": c.Param("filepath")})
+	})
+
 	// now implement context for Query + PostForm
 	// Context: create HTTP response effectively, clean up after HTTP request
 	r.POST("/login", func(c *myGin.Context) {
@@ -86,6 +85,10 @@ func main() {
 	//if err := encoder.Encode(obj); err != nil {
 	//	http.Error(w, err.Error(), 500)
 	//}
+
+	/* when matching the path we used map */
+	/* However, it only matches static route but not like a type e.g. /username/:name */
+	/* Thus, we introduce Trie tree here */
 
 	r.Run(":9999")
 }
